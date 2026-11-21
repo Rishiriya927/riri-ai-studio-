@@ -1,11 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
 <title>RiRi AI Studio</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif;padding:20px}.gold{color:#d8b46a}.wrap{max-width:650px;margin:auto}.logo{text-align:center;padding:30px 10px}.logo h1{color:#e4c477;font-size:32px;margin:8px}.logo p{color:#aaa;font-size:12px;letter-spacing:3px}.panel{background:#171717;border:1px solid #493a20;border-radius:16px;padding:20px;margin:15px 0}label{display:block;margin:15px 0 8px;color:#d8b46a}textarea,select,input{width:100%;padding:13px;background:#252525;border:1px solid #49413a;border-radius:9px;color:white;font-size:15px}textarea{height:110px;resize:vertical}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{width:100%;padding:15px;border:0;border-radius:10px;background:linear-gradient(90deg,#a77a31,#f1d28a);color:#17110a;font-weight:bold;font-size:16px;margin-top:20px}.note{text-align:center;color:#999;font-size:12px;line-height:1.6}.tag{color:#d8b46a;font-size:12px;text-align:center}
+:root{--bg:#090909;--panel:#171717;--panel2:#222;--gold:#e9bd62;--muted:#aaa;--line:#514127}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f7f4ee;font-family:Arial,Helvetica,sans-serif}
+header{text-align:center;padding:30px 16px 22px;background:linear-gradient(180deg,#17130c,#090909)}
+.brand{color:var(--gold);letter-spacing:4px;font-size:13px}.logo{font-size:34px;font-weight:800;color:var(--gold);margin:10px 0}.tag{color:#aaa;letter-spacing:4px;font-size:11px}
+main{max-width:900px;margin:auto;padding:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
+h2{font-size:21px;margin:0 0 18px}h3{color:var(--gold);font-size:17px;margin:0 0 12px}
+label{display:block;color:var(--gold);margin:14px 0 7px;font-weight:600}
+input,textarea,select{width:100%;background:#242424;color:#fff;border:1px solid #514b43;border-radius:12px;padding:13px;font-size:15px}
+textarea{min-height:115px;resize:vertical}select{min-height:48px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{border:0;border-radius:12px;padding:14px 16px;font-size:15px;font-weight:700;cursor:pointer}
+.primary{width:100%;margin-top:18px;background:linear-gradient(90deg,#b98220,#f4d080);color:#17110a}
+.secondary{background:#303030;color:#f6d58e;border:1px solid #69532b}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{background:#292929;color:#ddd;padding:10px 12px}.tabs button.active{background:#73521e;color:#fff}
+.output{white-space:pre-wrap;background:#101010;border:1px solid #39322a;border-radius:12px;padding:14px;min-height:70px;line-height:1.55;overflow-wrap:anywhere}
+.note{color:var(--muted);font-size:13px;line-height:1.5}.pill{display:inline-block;background:#302514;color:#f1cf82;padding:5px 9px;border-radius:20px;font-size:12px}
+.project{border-bottom:1px solid #383838;padding:12px 0}.project:last-child{border:0}
+footer{text-align:center;color:#a88b55;padding:24px;font-size:12px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.logo{font-size:29px}main{padding:10px}.card{padding:15px}}
 </style>
 </head>
-<body><main class="wrap"><header class="logo"><div class="gold">✦ RIRI ✦</div><h1>RiRi AI STUDIO</h1><p>CREATE · IMAGINE · GENERATE</p></header><section class="panel"><h2>🎬 Create Your Video</h2><label>Describe Your Video</label><textarea placeholder="Describe your imagination here..."></textarea><div class="grid"><div><label>Video Style</label><select><option>Realistic</option><option>Cartoon</option><option>Anime</option><option>Fantasy</option></select></div><div><label>Video Ratio</label><select><option>9:16 Shorts</option><option>16:9 Landscape</option></select></div></div><label>Generation Mode</label><select><option>Image to Video</option><option>Text to Video</option></select><button class="btn" onclick="alert('Video generation engine will be connected in the next development stage.')">GENERATE VIDEO</button><p class="note">Your personal AI video creation studio</p></section><section class="panel"><h3 class="gold">My Creative Studio</h3><p>✦ Realistic Videos</p><p>✦ Cartoon & Anime</p><p>✦ Character Library</p><p>✦ Hindi & English Voice</p><p>✦ My Projects</p></section><p class="tag">RI RI AI STUDIO · VERSION 1.0</p></main></body></html>
+<body>
+<header>
+  <div class="brand">✦ RIRI ✦</div>
+  <div class="logo">RiRi AI STUDIO</div>
+  <div class="tag">CREATE · IMAGINE · GENERATE</div>
+</header>
+<main>
+  <section class="card">
+    <h2>🎬 Create Your Story</h2>
+    <div class="tabs" id="languageTabs">
+      <button class="active" data-lang="both">Hindi + English</button>
+      <button data-lang="hi">Hindi</button>
+      <button data-lang="en">English</button>
+    </div>
+    <label for="idea">Describe your imagination / अपनी कहानी लिखें</label>
+    <textarea id="idea" placeholder="Example: A brave honey badger protects a lost child in a magical forest... / एक बहादुर बिज्जू जादुई जंगल में बच्चे की रक्षा करता है..."></textarea>
+    <div class="grid">
+      <div><label for="style">Video style</label><select id="style"><option>Realistic</option><option>Cartoon</option><option>Anime</option><option>Fantasy</option><option>Cinematic</option><option>All styles / Choose per scene</option></select></div>
+      <div><label for="ratio">Video ratio</label><select id="ratio"><option value="9:16">9:16 Shorts / Reels</option><option value="16:9">16:9 YouTube</option><option value="1:1">1:1 Square</option></select></div>
+      <div><label for="mode">Creation mode</label><select id="mode"><option>Full story package</option><option>Text to video prompt</option><option>Image to video prompt</option><option>Character design prompt</option><option>Scene-by-scene storyboard</option></select></div>
+      <div><label for="duration">Target duration</label><select id="duration"><option>15 seconds</option><option>30 seconds</option><option>60 seconds</option><option>2 minutes</option><option>5 minutes</option><option>10 minutes</option></select></div>
+    </div>
+    <button class="primary" id="create">CREATE STORY PACKAGE</button>
+    <p class="note">This version prepares scripts, scene plans and prompts in your browser. Actual AI image/video rendering needs a connected provider API and secure backend.</p>
+  </section>
+
+  <section class="card">
+    <h2>🎞️ Your Story Package</h2>
+    <div class="tabs" id="outputTabs">
+      <button class="active" data-tab="script">Story & Dialogue</button>
+      <button data-tab="scenes">Scenes</button>
+      <button data-tab="prompt">Video Prompt</button>
+      <button data-tab="character">Character Prompt</button>
+    </div>
+    <div id="result" class="output" style="margin-top:14px">Write your idea above and tap “Create Story Package”. Your generated planning content will appear here.</div>
+    <div class="grid">
+      <button class="secondary" id="copy">Copy result</button>
+      <button class="secondary" id="save">Save project</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>🖼️ Image & Video Studio</h2>
+    <div class="grid">
+      <div><span class="pill">Image generation</span><p class="note">Character portraits, locations, costumes and scene reference images.</p></div>
+      <div><span class="pill">Video generation</span><p class="note">Animate a reference image or generate a clip from a text prompt.</p></div>
+    </div>
+    <p class="note"><strong>Connection status:</strong> AI generation provider not connected yet. No video will be rendered until an API and backend are configured.</p>
+  </section>
+
+  <section class="card">
+    <h2>📁 My Projects</h2>
+    <div id="projects" class="note">Saved story packages will appear here on this device.</div>
+  </section>
+</main>
+<footer>RI RI AI STUDIO · VERSION 1.1</footer>
+<script>
+let language="both", activeTab="script", packageData={};
+const $=id=>document.getElementById(id);
+document.querySelectorAll("#languageTabs button").forEach(b=>b.addEventListener("click",()=>{language=b.dataset.lang;document.querySelectorAll("#languageTabs button").forEach(x=>x.classList.toggle("active",x===b));}));
+document.querySelectorAll("#outputTabs button").forEach(b=>b.addEventListener("click",()=>{activeTab=b.dataset.tab;document.querySelectorAll("#outputTabs button").forEach(x=>x.classList.toggle("active",x===b));renderOutput();}));
+function makePackage(){
+ const idea=$("idea").value.trim(); if(!idea){alert("Please describe your story first. / पहले अपनी कहानी लिखें।");return;}
+ const style=$("style").value, ratio=$("ratio").value, duration=$("duration").value, mode=$("mode").value;
+ const hi=language!=="en", en=language!=="hi";
+ const scenes=[
+  {t:"Scene 1 · Opening",d:"Establish the location, introduce the main character and show the story's central situation."},
+  {t:"Scene 2 · Discovery",d:"The character discovers a challenge, clue or unexpected problem. Build emotion and curiosity."},
+  {t:"Scene 3 · Turning point",d:"The main character makes a brave or important decision. Use a clear visual action."},
+  {t:"Scene 4 · Payoff",d:"Resolve the central moment with a memorable emotional or exciting ending."}
+ ];
+ packageData={
+ script:(hi?"कहानी का आधार:\n":"Story premise:\n")+idea+"\n\n"+(hi?"डायलॉग सुझाव:\nमुख्य किरदार: “मैं पीछे नहीं हटूँगा। चाहे रास्ता कितना भी मुश्किल हो।”\nदूसरा किरदार: “मुझे तुम पर भरोसा है। हम साथ मिलकर यह कर सकते हैं।”\n\n":"Dialogue suggestions:\nMain character: “I won't back down, no matter how difficult the road becomes.”\nSecond character: “I believe in you. We can do this together.”\n\n")+(en?"Tone: cinematic, emotional and engaging.":"भाव: सिनेमैटिक, भावनात्मक और प्रभावशाली।"),
+ scenes:scenes.map((s,i)=>s.t+"\n"+s.d+"\n"+(hi?"डायलॉग: “अब कहानी एक नया मोड़ लेने वाली है।”":"Dialogue: “Everything is about to change.”")).join("\n\n"),
+ prompt:"Create a "+style+" "+duration+" video based on: "+idea+". Format "+ratio+". Use consistent character appearance, expressive acting, clear scene transitions, cinematic composition, natural motion, detailed environment and professional lighting. Generate as a sequence of four scenes. Do not add subtitles unless requested. Mode: "+mode+".",
+ character:"Design a memorable original character for this story: "+idea+". Style: "+style+". Show a full-body reference, front view and 3/4 view, consistent face/body proportions, clear costume details, expressive neutral pose, clean uncluttered background. Keep the same character design across every scene."
+ };
+ renderOutput();
+}
+function renderOutput(){if(!packageData[activeTab])return;$("result").textContent=packageData[activeTab];}
+$("create").addEventListener("click",makePackage);
+$("copy").addEventListener("click",async()=>{const t=$("result").textContent;try{await navigator.clipboard.writeText(t);alert("Copied!");}catch(e){alert("Select and copy the text manually.");}});
+function loadProjects(){let a=JSON.parse(localStorage.getItem("ririProjects")||"[]");$("projects").innerHTML=a.length?a.map((p,i)=>'<div class="project"><strong>'+escapeHtml(p.name)+'</strong><br><small>'+escapeHtml(p.date)+'</small><br><button class="secondary" onclick="openProject('+i+')">Open</button></div>').join(""):"Saved story packages will appear here on this device.";}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+$("save").addEventListener("click",()=>{if(!packageData.script){alert("Create a story package first.");return;}let a=JSON.parse(localStorage.getItem("ririProjects")||"[]");a.unshift({name:$("idea").value.slice(0,55),date:new Date().toLocaleString(),data:packageData});localStorage.setItem("ririProjects",JSON.stringify(a.slice(0,30)));loadProjects();alert("Project saved on this device.");});
+window.openProject=i=>{let a=JSON.parse(localStorage.getItem("ririProjects")||"[]");packageData=a[i].data;activeTab="script";document.querySelectorAll("#outputTabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="script"));renderOutput();};
+loadProjects();
+</script>
+</body>
+</html>
