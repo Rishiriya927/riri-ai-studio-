@@ -10,20 +10,19 @@
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f7f4ee;font-family:Arial,Helvetica,sans-serif}
 header{text-align:center;padding:30px 16px 22px;background:linear-gradient(180deg,#17130c,#090909)}
 .brand{color:var(--gold);letter-spacing:4px;font-size:13px}.logo{font-size:34px;font-weight:800;color:var(--gold);margin:10px 0}.tag{color:#aaa;letter-spacing:4px;font-size:11px}
-main{max-width:900px;margin:auto;padding:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
-h2{font-size:21px;margin:0 0 18px}h3{color:var(--gold);font-size:17px;margin:0 0 12px}
+main{max-width:900px;margin:auto;padding:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
+h2{font-size:21px;margin:0 0 18px}h3{color:var(--gold);font-size:17px;margin:18px 0 8px}
 label{display:block;color:var(--gold);margin:14px 0 7px;font-weight:600}
 input,textarea,select{width:100%;background:#242424;color:#fff;border:1px solid #514b43;border-radius:12px;padding:13px;font-size:15px}
-textarea{min-height:115px;resize:vertical}select{min-height:48px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+textarea{min-height:140px;resize:vertical}select{min-height:48px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 button{border:0;border-radius:12px;padding:14px 16px;font-size:15px;font-weight:700;cursor:pointer}
 .primary{width:100%;margin-top:18px;background:linear-gradient(90deg,#b98220,#f4d080);color:#17110a}
 .secondary{background:#303030;color:#f6d58e;border:1px solid #69532b}
 .tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{background:#292929;color:#ddd;padding:10px 12px}.tabs button.active{background:#73521e;color:#fff}
-.output{white-space:pre-wrap;background:#101010;border:1px solid #39322a;border-radius:12px;padding:14px;min-height:70px;line-height:1.55;overflow-wrap:anywhere}
+.output{white-space:pre-wrap;background:#101010;border:1px solid #39322a;border-radius:12px;padding:14px;min-height:70px;line-height:1.6;overflow-wrap:anywhere}
 .note{color:var(--muted);font-size:13px;line-height:1.5}.pill{display:inline-block;background:#302514;color:#f1cf82;padding:5px 9px;border-radius:20px;font-size:12px}
 .project{border-bottom:1px solid #383838;padding:12px 0}.project:last-child{border:0}
+.status{border-left:3px solid var(--gold);padding:10px 12px;background:#211b10;border-radius:8px;color:#e8d5ad;font-size:13px;line-height:1.5}
 footer{text-align:center;color:#a88b55;padding:24px;font-size:12px}
 @media(max-width:560px){.grid{grid-template-columns:1fr}.logo{font-size:29px}main{padding:10px}.card{padding:15px}}
 </style>
@@ -43,15 +42,15 @@ footer{text-align:center;color:#a88b55;padding:24px;font-size:12px}
       <button data-lang="en">English</button>
     </div>
     <label for="idea">Describe your imagination / अपनी कहानी लिखें</label>
-    <textarea id="idea" placeholder="Example: A brave honey badger protects a lost child in a magical forest... / एक बहादुर बिज्जू जादुई जंगल में बच्चे की रक्षा करता है..."></textarea>
+    <textarea id="idea">In a magical forest, Baxter, a fearless but mischievous honey badger warrior, discovers Shayra, a majestic white tiger warrior, surrounded by dangerous hunters. Baxter is smaller, stubborn, playful and overconfident. Shayra is larger, calm, gentle and kind-hearted, but becomes fierce when her friends are threatened. Baxter refuses to abandon her. Together they defeat the hunters and begin an extraordinary friendship.</textarea>
     <div class="grid">
-      <div><label for="style">Video style</label><select id="style"><option>Realistic</option><option>Cartoon</option><option>Anime</option><option>Fantasy</option><option>Cinematic</option><option>All styles / Choose per scene</option></select></div>
+      <div><label for="style">Video style</label><select id="style"><option>Realistic 3D animation</option><option>Cartoon</option><option>Anime</option><option>Fantasy</option><option>Cinematic</option><option>All styles / Choose per scene</option></select></div>
       <div><label for="ratio">Video ratio</label><select id="ratio"><option value="9:16">9:16 Shorts / Reels</option><option value="16:9">16:9 YouTube</option><option value="1:1">1:1 Square</option></select></div>
       <div><label for="mode">Creation mode</label><select id="mode"><option>Full story package</option><option>Text to video prompt</option><option>Image to video prompt</option><option>Character design prompt</option><option>Scene-by-scene storyboard</option></select></div>
-      <div><label for="duration">Target duration</label><select id="duration"><option>15 seconds</option><option>30 seconds</option><option>60 seconds</option><option>2 minutes</option><option>5 minutes</option><option>10 minutes</option></select></div>
+      <div><label for="duration">Target duration</label><select id="duration"><option>15 seconds</option><option>30 seconds</option><option>60 seconds</option><option selected>2 minutes</option><option>5 minutes</option><option>10 minutes</option></select></div>
     </div>
     <button class="primary" id="create">CREATE STORY PACKAGE</button>
-    <p class="note">This version prepares scripts, scene plans and prompts in your browser. Actual AI image/video rendering needs a connected provider API and secure backend.</p>
+    <p class="note">This version creates scripts, scene plans and copy-ready prompts in your browser. Actual AI image/video rendering requires a connected provider API and secure backend.</p>
   </section>
 
   <section class="card">
@@ -62,7 +61,7 @@ footer{text-align:center;color:#a88b55;padding:24px;font-size:12px}
       <button data-tab="prompt">Video Prompt</button>
       <button data-tab="character">Character Prompt</button>
     </div>
-    <div id="result" class="output" style="margin-top:14px">Write your idea above and tap “Create Story Package”. Your generated planning content will appear here.</div>
+    <div id="result" class="output" style="margin-top:14px">Your Baxter and Shayra story is ready to customize. Tap “Create Story Package” to generate the full package.</div>
     <div class="grid">
       <button class="secondary" id="copy">Copy result</button>
       <button class="secondary" id="save">Save project</button>
@@ -72,10 +71,10 @@ footer{text-align:center;color:#a88b55;padding:24px;font-size:12px}
   <section class="card">
     <h2>🖼️ Image & Video Studio</h2>
     <div class="grid">
-      <div><span class="pill">Image generation</span><p class="note">Character portraits, locations, costumes and scene reference images.</p></div>
-      <div><span class="pill">Video generation</span><p class="note">Animate a reference image or generate a clip from a text prompt.</p></div>
+      <div><span class="pill">Image generation</span><p class="note">Use the Character Prompt to create consistent reference images for Baxter and Shayra.</p></div>
+      <div><span class="pill">Video generation</span><p class="note">Use each scene's video prompt in an AI video tool that supports text-to-video or image-to-video.</p></div>
     </div>
-    <p class="note"><strong>Connection status:</strong> AI generation provider not connected yet. No video will be rendered until an API and backend are configured.</p>
+    <div class="status"><strong>Connection status:</strong> No AI rendering provider is connected in this HTML version. This page can prepare prompts, but it cannot render a video until a secure backend and provider API are configured.</div>
   </section>
 
   <section class="card">
@@ -83,37 +82,107 @@ footer{text-align:center;color:#a88b55;padding:24px;font-size:12px}
     <div id="projects" class="note">Saved story packages will appear here on this device.</div>
   </section>
 </main>
-<footer>RI RI AI STUDIO · VERSION 1.1</footer>
+<footer>RI RI AI STUDIO · VERSION 1.2</footer>
 <script>
 let language="both", activeTab="script", packageData={};
 const $=id=>document.getElementById(id);
-document.querySelectorAll("#languageTabs button").forEach(b=>b.addEventListener("click",()=>{language=b.dataset.lang;document.querySelectorAll("#languageTabs button").forEach(x=>x.classList.toggle("active",x===b));}));
-document.querySelectorAll("#outputTabs button").forEach(b=>b.addEventListener("click",()=>{activeTab=b.dataset.tab;document.querySelectorAll("#outputTabs button").forEach(x=>x.classList.toggle("active",x===b));renderOutput();}));
+document.querySelectorAll("#languageTabs button").forEach(b=>b.addEventListener("click",()=>{
+  language=b.dataset.lang;
+  document.querySelectorAll("#languageTabs button").forEach(x=>x.classList.toggle("active",x===b));
+}));
+document.querySelectorAll("#outputTabs button").forEach(b=>b.addEventListener("click",()=>{
+  activeTab=b.dataset.tab;
+  document.querySelectorAll("#outputTabs button").forEach(x=>x.classList.toggle("active",x===b));
+  renderOutput();
+}));
+
+const baxterCharacter = `BAXTER — a honey badger warrior, clearly smaller than Shayra but compact, muscular and powerful for his size. Dark charcoal-brown fur, a broad pale cream stripe running from the top of his head down his back, small rounded ears, strong claws, expressive mischievous eyes and a confident crooked grin. He is stubborn, playful, cheeky, fearless and overconfident. Keep his honey-badger species unmistakable; do not turn him into a human, bear, dog or generic mammal.`;
+const shayraCharacter = `SHAYRA — a majestic female white Bengal tiger warrior, noticeably larger and taller than Baxter. Elegant powerful feline build, clean white fur, natural charcoal tiger stripes, icy-blue expressive eyes, strong paws and a calm, compassionate face. She is gentle, patient, soft-hearted and protective, but becomes intensely fierce and formidable when friends are in danger. Keep her unmistakably a white tiger, never a lion or snow leopard.`;
+const continuity = `CHARACTER CONTINUITY: Use the exact same Baxter and Shayra designs in every shot. Preserve species, fur colours, markings, eye colours, body proportions and relative size. Baxter is always slightly smaller than Shayra. No costume or anatomy changes between scenes.`;
+
+const sceneBlueprint = [
+ {title:"The Forest Guardian",visual:"A sweeping aerial view reveals an ancient magical forest at dawn. Sunbeams pass through enormous trees, glowing fireflies drift above a stream, and birds scatter as Baxter confidently marches along a mossy trail.",action:"Introduce Baxter running, sniffing the air and playfully challenging a falling branch. Show his compact, powerful honey-badger body and mischievous grin.",dialogue:"Baxter: “Another peaceful day. Almost too peaceful for a warrior like me.”",camera:"Wide aerial establishing shot, then low-angle tracking shot beside Baxter.",sound:"Soft forest ambience, birdsong, playful adventurous orchestral theme."},
+ {title:"A Cry for Help",visual:"A distant crash echoes through the trees. Birds burst from the canopy. Baxter stops, ears raised, and looks toward a cloud of dust beyond the ferns.",action:"Baxter hears a tiger's roar mixed with the shouts of hunters. His playful expression turns alert.",dialogue:"Baxter: “That didn't sound like a friendly forest picnic.”",camera:"Close-up on Baxter's eyes, then fast pan toward the distant commotion.",sound:"Sudden branch crack, distant roar, music shifts to suspense."},
+ {title:"Shayra Surrounded",visual:"In a forest clearing, Shayra stands protectively near an injured young deer. Several armed hunters have formed a circle around her, their nets and ropes blocking the escape routes.",action:"Show Shayra warning the hunters to step away from the frightened animal. Her posture is calm but ready.",dialogue:"Shayra: “Leave the little one alone. You don't want to hurt anyone today.”",camera:"Wide shot revealing the hunters, then medium close-up of Shayra.",sound:"Tense low strings, nervous deer movement, hunters' footsteps."},
+ {title:"The Brave Little Warrior",visual:"From behind a tree, Baxter watches the hunters close in. He glances at the safe path behind him, then looks back at Shayra.",action:"Baxter hesitates for one beat, grins, lowers his shoulders and charges into the clearing.",dialogue:"Baxter: “Hey, fur-heads! Pick on someone your own size!”",camera:"Over-the-shoulder view from behind Baxter, followed by a dynamic low tracking shot.",sound:"Music surges, fast pawbeats, a sharp heroic sting."},
+ {title:"First Strike",visual:"Baxter darts between the hunters' boots, dodges a swinging net and knocks a rope trap loose. The hunters stumble in confusion.",action:"Use agile, non-graphic action. Baxter uses speed, cleverness and his small size to distract the hunters and open a path for Shayra.",dialogue:"Baxter: “You missed! Try keeping up!”",camera:"Quick side-tracking shots, close-ups of paws and a brief slow-motion dodge.",sound:"Whooshes, rope snap, energetic percussion."},
+ {title:"The Tiger's Warning",visual:"A hunter raises a net toward Baxter. Shayra sees the danger. Her gentle expression hardens; she steps forward, roars and plants her powerful paws between Baxter and the hunters.",action:"Shayra breaks the hunters' formation with a powerful warning charge, forcing them backward without graphic injury.",dialogue:"Shayra: “No one touches my friend.”",camera:"Low-angle hero shot of Shayra, close-up on fierce blue eyes, then wide action shot.",sound:"Deep tiger roar, dramatic orchestral hit, leaves rushing in the wind."},
+ {title:"Warriors Together",visual:"Baxter and Shayra stand back-to-back in the clearing. Baxter distracts the hunters while Shayra blocks their escape route and tears through the empty nets.",action:"Show coordinated teamwork: Baxter draws attention; Shayra protects the deer and disables the traps. Keep action readable and family-friendly.",dialogue:"Baxter: “You take the big one. I'll handle the noisy ones!” Shayra: “Stay close, little warrior.”",camera:"Circular camera move around both heroes, then alternating medium action shots.",sound:"Heroic adventure score builds, synchronized movement and net tearing."},
+ {title:"The Hunters Retreat",visual:"The hunters realize they are outmatched. Their nets lie tangled on the ground. They retreat through the trees, leaving the animals unharmed.",action:"Shayra watches until the danger is gone. Baxter tries to look cool, then shakes leaves from his fur.",dialogue:"Baxter: “I had everything under control.” Shayra: “Of course you did.”",camera:"Wide shot of the retreat, then humorous two-shot of the heroes.",sound:"Footsteps fading, music relaxes into a warm triumphant theme."},
+ {title:"A New Friendship",visual:"The rescued deer nuzzles Shayra. Baxter stands beside her, pretending not to enjoy the grateful attention. Warm sunset light fills the clearing.",action:"Shayra thanks Baxter sincerely. Baxter shrugs, but his expression reveals that he is touched.",dialogue:"Shayra: “You could have run away. Why did you stay?” Baxter: “Because nobody should face danger alone.”",camera:"Gentle close-ups, eye-level two-shot, warm golden backlight.",sound:"Soft emotional piano over gentle forest ambience."},
+ {title:"The Legend Begins",visual:"Baxter and Shayra walk side by side toward a glowing path deeper into the magical forest. The camera rises above the treetops as distant mountains shine in the sunset.",action:"End with the two warriors becoming partners, hinting at future adventures. Baxter races ahead; Shayra smiles and follows.",dialogue:"Shayra: “Ready for the next adventure?” Baxter: “I was born ready!”",camera:"Rear tracking shot that widens into a sweeping aerial finale.",sound:"Full uplifting orchestral theme, birds take flight, clean cinematic ending."}
+];
+
+function isBaxterStory(text){
+ const s=text.toLowerCase();
+ return (s.includes("baxter") || s.includes("honey badger")) && (s.includes("shayra") || s.includes("white tiger"));
+}
+function sceneCount(duration){
+ if(duration==="15 seconds") return 2;
+ if(duration==="30 seconds") return 3;
+ if(duration==="60 seconds") return 5;
+ if(duration==="2 minutes") return 10;
+ if(duration==="5 minutes") return 16;
+ return 24;
+}
+function makeGenericScenes(idea,count,style){
+ const titles=["Opening","Discovery","A New Clue","Rising Danger","A Difficult Choice","The Plan","First Attempt","A Setback","Turning Point","Teamwork","Final Challenge","The Big Moment","Aftermath","A Kind Gesture","Resolution","New Beginning","Unexpected Twist","Final Showdown","A Sacrifice","The Escape","The Truth","The Victory","A Quiet Moment","The Next Adventure"];
+ return Array.from({length:count},(_,i)=>({
+  title:titles[i%titles.length],
+  visual:`Show a clear, visually distinct moment that advances this story: ${idea}`,
+  action:"Give the main character one specific physical action and show the emotional reaction clearly. Avoid repeating previous scene actions.",
+  dialogue:`Main character: “${["Something isn't right here.","We need to find out what happened.","There has to be another way.","I won't give up now."][i%4]}”`,
+  camera:["Wide establishing shot","Medium tracking shot","Close-up reaction shot","Low-angle action shot"][i%4],
+  sound:"Use scene-appropriate ambience, effects and a cinematic score that supports the emotion."
+ }));
+}
+function buildSceneText(scenes,ratio,style){
+ return scenes.map((s,i)=>`SCENE ${i+1} — ${s.title}\nVISUAL: ${s.visual}\nACTION: ${s.action}\nDIALOGUE: ${s.dialogue}\nCAMERA: ${s.camera}\nSOUND: ${s.sound}\nIMAGE PROMPT: ${style}, cinematic high-detail frame, ${s.visual} ${continuityIfBaxter()}\nVIDEO PROMPT: Animate this scene naturally in ${ratio}. ${s.action} Use expressive acting, believable movement, cinematic lighting and a smooth transition. ${continuityIfBaxter()}`).join("\n\n");
+}
+let currentIsBaxter=false;
+function continuityIfBaxter(){return currentIsBaxter?continuity:"Maintain consistent character appearance throughout the entire story.";}
 function makePackage(){
  const idea=$("idea").value.trim(); if(!idea){alert("Please describe your story first. / पहले अपनी कहानी लिखें।");return;}
  const style=$("style").value, ratio=$("ratio").value, duration=$("duration").value, mode=$("mode").value;
- const hi=language!=="en", en=language!=="hi";
- const scenes=[
-  {t:"Scene 1 · Opening",d:"Establish the location, introduce the main character and show the story's central situation."},
-  {t:"Scene 2 · Discovery",d:"The character discovers a challenge, clue or unexpected problem. Build emotion and curiosity."},
-  {t:"Scene 3 · Turning point",d:"The main character makes a brave or important decision. Use a clear visual action."},
-  {t:"Scene 4 · Payoff",d:"Resolve the central moment with a memorable emotional or exciting ending."}
- ];
- packageData={
- script:(hi?"कहानी का आधार:\n":"Story premise:\n")+idea+"\n\n"+(hi?"डायलॉग सुझाव:\nमुख्य किरदार: “मैं पीछे नहीं हटूँगा। चाहे रास्ता कितना भी मुश्किल हो।”\nदूसरा किरदार: “मुझे तुम पर भरोसा है। हम साथ मिलकर यह कर सकते हैं।”\n\n":"Dialogue suggestions:\nMain character: “I won't back down, no matter how difficult the road becomes.”\nSecond character: “I believe in you. We can do this together.”\n\n")+(en?"Tone: cinematic, emotional and engaging.":"भाव: सिनेमैटिक, भावनात्मक और प्रभावशाली।"),
- scenes:scenes.map((s,i)=>s.t+"\n"+s.d+"\n"+(hi?"डायलॉग: “अब कहानी एक नया मोड़ लेने वाली है।”":"Dialogue: “Everything is about to change.”")).join("\n\n"),
- prompt:"Create a "+style+" "+duration+" video based on: "+idea+". Format "+ratio+". Use consistent character appearance, expressive acting, clear scene transitions, cinematic composition, natural motion, detailed environment and professional lighting. Generate as a sequence of four scenes. Do not add subtitles unless requested. Mode: "+mode+".",
- character:"Design a memorable original character for this story: "+idea+". Style: "+style+". Show a full-body reference, front view and 3/4 view, consistent face/body proportions, clear costume details, expressive neutral pose, clean uncluttered background. Keep the same character design across every scene."
- };
+ const hi=language!=="en", en=language!=="hi", count=sceneCount(duration);
+ currentIsBaxter=isBaxterStory(idea);
+ const scenes=currentIsBaxter?sceneBlueprint.slice(0,Math.min(count,sceneBlueprint.length)):makeGenericScenes(idea,count,style);
+ const sceneText=buildSceneText(scenes,ratio,style);
+ const character=currentIsBaxter
+  ? `${baxterCharacter}\n\n${shayraCharacter}\n\n${continuity}\n\nREFERENCE SHEET PROMPT: Create a professional character reference sheet with both characters standing side by side, full body, front view and 3/4 view. Plain neutral studio background, readable silhouettes, natural anatomy, detailed fur, expressive faces, consistent scale. Baxter must be visibly smaller than Shayra. No extra characters, no text, no watermark. Style: ${style}.`
+  : `Design memorable original characters for this story: ${idea}. Create full-body front and 3/4 reference views, clear silhouettes, consistent face/body proportions, detailed appearance and a clean neutral background. Keep every character visually identical in all scenes. Style: ${style}.`;
+ const script=currentIsBaxter
+  ? `STORY TITLE: BAXTER & SHAYRA: THE FOREST ALLIANCE\n\nSTORY PREMISE:\n${idea}\n\nMAIN CHARACTERS:\n${baxterCharacter}\n\n${shayraCharacter}\n\nSTORY ARC:\nBaxter hears a cry for help, discovers Shayra protecting a young deer from hunters, and chooses to help instead of running away. Their different strengths become a winning team. The hunters retreat, the animals are safe, and a loyal friendship begins.\n\nKEY DIALOGUE:\n${scenes.map((s,i)=>`${i+1}. ${s.dialogue}`).join("\n")}\n\nTONE: Cinematic, adventurous, funny, emotional and family-friendly. English dialogue suited to a US audience.`
+  : `STORY PREMISE:\n${idea}\n\nSTORY ARC:\nBuild a clear beginning, rising conflict, meaningful turning point and satisfying ending across ${count} distinct scenes.\n\nTONE: Cinematic, emotional and engaging.`;
+ const prompt=`Create a ${style} ${duration} animated film based on this story:\n${idea}\n\nFORMAT: ${ratio}. TARGET: ${duration}. Create ${scenes.length} distinct scenes with clear cause-and-effect storytelling. Give every scene a different visual event, action, camera setup and emotional beat. Include spoken dialogue in each scene. Do not repeat generic placeholder dialogue. Use natural movement, expressive acting, cinematic composition, detailed environments, professional lighting and smooth transitions. ${continuityIfBaxter()}\n\n${mode.toUpperCase()}.\n\nDETAILED SCENE PLAN:\n${sceneText}`;
+ packageData={script,scenes:sceneText,prompt,character};
  renderOutput();
 }
 function renderOutput(){if(!packageData[activeTab])return;$("result").textContent=packageData[activeTab];}
 $("create").addEventListener("click",makePackage);
-$("copy").addEventListener("click",async()=>{const t=$("result").textContent;try{await navigator.clipboard.writeText(t);alert("Copied!");}catch(e){alert("Select and copy the text manually.");}});
-function loadProjects(){let a=JSON.parse(localStorage.getItem("ririProjects")||"[]");$("projects").innerHTML=a.length?a.map((p,i)=>'<div class="project"><strong>'+escapeHtml(p.name)+'</strong><br><small>'+escapeHtml(p.date)+'</small><br><button class="secondary" onclick="openProject('+i+')">Open</button></div>').join(""):"Saved story packages will appear here on this device.";}
+$("copy").addEventListener("click",async()=>{
+ const t=$("result").textContent;
+ try{await navigator.clipboard.writeText(t);alert("Copied!");}
+ catch(e){const r=document.createRange();r.selectNodeContents($("result"));const sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);alert("Text selected. Use Copy from your browser menu.");}
+});
+function loadProjects(){
+ let a=[];try{a=JSON.parse(localStorage.getItem("ririProjects")||"[]");}catch(e){}
+ $("projects").innerHTML=a.length?a.map((p,i)=>'<div class="project"><strong>'+escapeHtml(p.name)+'</strong><br><small>'+escapeHtml(p.date)+'</small><br><button class="secondary" onclick="openProject('+i+')">Open</button></div>').join(""):"Saved story packages will appear here on this device.";
+}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-$("save").addEventListener("click",()=>{if(!packageData.script){alert("Create a story package first.");return;}let a=JSON.parse(localStorage.getItem("ririProjects")||"[]");a.unshift({name:$("idea").value.slice(0,55),date:new Date().toLocaleString(),data:packageData});localStorage.setItem("ririProjects",JSON.stringify(a.slice(0,30)));loadProjects();alert("Project saved on this device.");});
-window.openProject=i=>{let a=JSON.parse(localStorage.getItem("ririProjects")||"[]");packageData=a[i].data;activeTab="script";document.querySelectorAll("#outputTabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="script"));renderOutput();};
+$("save").addEventListener("click",()=>{
+ if(!packageData.script){alert("Create a story package first.");return;}
+ let a=[];try{a=JSON.parse(localStorage.getItem("ririProjects")||"[]");}catch(e){}
+ a.unshift({name:$("idea").value.slice(0,55),date:new Date().toLocaleString(),data:packageData});
+ try{localStorage.setItem("ririProjects",JSON.stringify(a.slice(0,30)));loadProjects();alert("Project saved on this device.");}
+ catch(e){alert("Device storage is full. Copy the result before clearing older projects.");}
+});
+window.openProject=i=>{
+ let a=[];try{a=JSON.parse(localStorage.getItem("ririProjects")||"[]");}catch(e){}
+ if(!a[i])return;packageData=a[i].data;activeTab="script";
+ document.querySelectorAll("#outputTabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="script"));
+ renderOutput();window.scrollTo({top:document.querySelector("#result").offsetTop-80,behavior:"smooth"});
+};
 loadProjects();
 </script>
 </body>
