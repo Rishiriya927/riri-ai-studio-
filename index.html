@@ -64,4 +64,139 @@ function productionText(){let d=collect();return `RIRI AI STUDIO 5.0 PRODUCTION 
 function downloadText(){download('riri-studio-5-production-pack.txt',productionText(),'text/plain')}
 function renderTimeline(){$('timeline').innerHTML=scenes.map((s,i)=>`<div class="scene"><b>${i+1}. ${esc(s.name)}</b><div class="muted small">${esc(s.duration)} · ${esc(s.dialogue||'No dialogue added')}</div></div>`).join('')||'<p class="muted">Build a scene plan first.</p>'}
 loadProject();if(!scenes.length){scenes=defaults.map((s,i)=>({name:s[0],visual:s[1],dialogue:'',duration:'5 seconds'}));renderScenes()}$('homeTitle').textContent=$('title').value;
+
+// RiRi AI Studio - Runway Image Generation Connection
+(() => {
+  if (document.getElementById("riri-ai-connect")) return;
+
+  const panel = document.createElement("section");
+  panel.id = "riri-ai-connect";
+  panel.style.cssText = "max-width:1000px;margin:24px auto;padding:22px;background:#121a2b;border:1px solid #394b70;border-radius:16px;color:#fff";
+
+  panel.innerHTML = `
+    <h2 style="color:#efc46b">RiRi AI Generation Studio</h2>
+    <p>Connect Runway and create your first AI image.</p>
+
+    <label>Backend URL</label>
+    <input id="ririBackend" value="https://riri-ai-backend.udaandigitalstudio533.workers.dev"
+      style="display:block;width:100%;padding:12px;margin:8px 0 14px">
+
+    <label>Studio Pass</label>
+    <input id="ririPass" type="password" placeholder="Enter your Studio Pass"
+      style="display:block;width:100%;padding:12px;margin:8px 0 14px">
+
+    <label>Image prompt</label>
+    <textarea id="ririPrompt" rows="5"
+      style="display:block;width:100%;padding:12px;margin:8px 0 14px">A highly detailed cinematic 3D character portrait of Baxter, a small fearless honey badger adventurer wearing a red scarf and rugged leather vest, standing in an enchanted forest, expressive face, realistic fur, professional cinematic lighting.</textarea>
+
+    <label>Aspect ratio</label>
+    <select id="ririRatio" style="display:block;padding:12px;margin:8px 0 14px">
+      <option value="1920:1080">16:9 Landscape</option>
+      <option value="1080:1920">9:16 Vertical</option>
+      <option value="1024:1024">1:1 Square</option>
+    </select>
+
+    <button id="ririGenerate" style="padding:13px 22px;background:#efc46b;color:#151515;border:0;border-radius:9px;font-weight:bold;cursor:pointer">
+      Generate Baxter Image
+    </button>
+
+    <p id="ririStatus" style="margin-top:16px">Ready</p>
+    <div id="ririResult"></div>
+  `;
+
+  const main = document.querySelector("main");
+  if (!main) {
+    console.error("RiRi Studio main section not found.");
+    return;
+  }
+  main.appendChild(panel);
+
+  const $r = id => document.getElementById(id);
+
+  $r("ririGenerate").addEventListener("click", async () => {
+    const backend = $r("ririBackend").value.trim().replace(/\/+$/, "");
+    const pass = $r("ririPass").value;
+    const promptText = $r("ririPrompt").value.trim();
+    const ratio = $r("ririRatio").value;
+    const button = $r("ririGenerate");
+    const status = $r("ririStatus");
+    const resultBox = $r("ririResult");
+
+    if (!backend || !pass || !promptText) {
+      status.textContent = "Enter Backend URL, Studio Pass and prompt.";
+      return;
+    }
+
+    button.disabled = true;
+    resultBox.innerHTML = "";
+    status.textContent = "Sending image request to Runway...";
+
+    try {
+      const response = await fetch(backend + "/api/image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Studio-Pass": pass
+        },
+        body: JSON.stringify({
+          promptText,
+          ratio,
+          model: "gen4_image_turbo"
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.id) {
+        throw new Error(JSON.stringify(data));
+      }
+
+      status.textContent = "Task created. Waiting for image...";
+
+      for (let attempt = 0; attempt < 60; attempt++) {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        const taskResponse = await fetch(
+          backend + "/api/tasks/" + encodeURIComponent(data.id),
+          { headers: { "X-Studio-Pass": pass } }
+        );
+
+        const task = await taskResponse.json();
+
+        if (!taskResponse.ok) {
+          throw new Error(JSON.stringify(task));
+        }
+
+        if (task.status === "SUCCEEDED") {
+          const imageUrl = Array.isArray(task.output)
+            ? task.output[0]
+            : task.output;
+
+          if (!imageUrl) throw new Error("No image URL returned.");
+
+          const img = document.createElement("img");
+          img.src = imageUrl;
+          img.alt = "Generated Baxter image";
+          img.style.cssText = "display:block;width:100%;max-width:650px;margin-top:16px;border-radius:12px";
+
+          resultBox.appendChild(img);
+          status.textContent = "Image generated successfully!";
+          return;
+        }
+
+        if (task.status === "FAILED") {
+          throw new Error(task.failure || task.failureCode || "Runway task failed.");
+        }
+
+        status.textContent = "Generating... " + task.status;
+      }
+
+      throw new Error("Generation is taking longer. Check again later.");
+    } catch (error) {
+      status.textContent = "Error: " + error.message;
+    } finally {
+      button.disabled = false;
+    }
+  });
+})();
 </script></body></html>
