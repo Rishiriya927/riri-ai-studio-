@@ -138,22 +138,17 @@ loadProject();if(!scenes.length){scenes=defaults.map((s,i)=>({name:s[0],visual:s
           "Content-Type": "application/json",
           "X-Studio-Pass": pass
         },
-        body: JSON.stringify({
-          promptText,
-          ratio,
-          model: "gen4_image_turbo"
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.id) {
+        const data = await response.json();
+     if (!response.ok || !data.id) {
         throw new Error(JSON.stringify(data));
       }
-
       status.textContent = "Task created. Waiting for image...";
-
-      for (let attempt = 0; attempt < 60; attempt++) {
+      body: JSON.stringify({
+      promptText,
+      ratio,
+      model: "gen4_image_turbo",
+      referenceImages: []}),
+     for (let attempt = 0; attempt < 60; attempt++) {
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         const taskResponse = await fetch(
