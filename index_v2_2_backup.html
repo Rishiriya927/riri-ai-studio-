@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090b12">
+<title>RiRi AI Studio 2.2</title>
+<style>
+:root{--bg:#090b12;--panel:#121725;--panel2:#171f30;--gold:#e8bd65;--text:#f4f1e9;--muted:#9ca7b8;--line:#293246;--green:#68d6a0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#27314b 0,transparent 35%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:22px 16px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#090b12ed;backdrop-filter:blur(12px);z-index:5}
+.wrap{max-width:1100px;margin:auto}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.logo{font-weight:900;letter-spacing:1.5px;color:var(--gold);font-size:20px}.tag{font-size:11px;color:#15120a;background:var(--gold);padding:3px 8px;border-radius:20px;font-weight:800}
+.sub{color:var(--muted);font-size:13px;margin-top:4px}.status{font-size:11px;color:#ffd98c;border:1px solid #725a2e;padding:5px 8px;border-radius:20px;white-space:nowrap}
+nav{display:flex;gap:7px;overflow:auto;padding-top:16px}nav button{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:9px 12px;white-space:nowrap}nav button.active{background:var(--gold);color:#17120a;border-color:var(--gold);font-weight:800}
+main{padding:18px 14px 50px}.hero{padding:20px;border:1px solid #55452a;border-radius:18px;background:linear-gradient(120deg,#211c17,#151c2a);margin-bottom:16px}.hero h1{margin:0 0 7px;font-size:clamp(23px,5vw,34px)}.hero p{color:#c4c7ce;margin:0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:13px}.card h2,.card h3{margin:0 0 10px}.card h2{font-size:18px}.card h3{font-size:15px;color:var(--gold)}label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,select,textarea{width:100%;background:#0b101b;color:var(--text);border:1px solid #344057;border-radius:9px;padding:11px;font:inherit}textarea{min-height:100px;resize:vertical}.btn{border:0;border-radius:10px;background:var(--gold);color:#17120a;padding:11px 15px;font-weight:800;font-size:14px;cursor:pointer}.btn.secondary{background:#222d41;color:var(--text);border:1px solid #39465d}.btn.danger{background:#48262b;color:#ffdce0}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.muted{color:var(--muted);font-size:12px}.notice{border:1px solid #6a542d;background:#241f16;color:#f4d99d;padding:11px;border-radius:10px;font-size:13px;margin:12px 0}.good{color:var(--green)}.hidden{display:none!important}.tab{display:none}.tab.active{display:block}.pill{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:4px 9px;color:var(--muted);font-size:11px;margin:3px 3px 3px 0}.scene{border:1px solid var(--line);background:#0e1420;border-radius:12px;padding:12px;margin:9px 0}.scene strong{color:var(--gold)}.scene pre{white-space:pre-wrap;word-break:break-word;color:#dce2eb;font:12px/1.5 inherit;margin:7px 0}.output{white-space:pre-wrap;word-break:break-word;background:#0b101b;border:1px solid var(--line);padding:13px;border-radius:10px;min-height:90px;font-size:13px}.meter{height:8px;background:#283247;border-radius:10px;overflow:hidden}.meter span{display:block;height:100%;width:0;background:var(--gold)}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.hero{padding:16px}header{padding:16px 12px 10px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+ <div class="brand"><div><div class="logo">RIRi AI STUDIO <span class="tag">2.2</span></div><div class="sub">Your personal movie-making workspace</div></div><div class="status">AI provider not connected</div></div>
+ <nav id="nav">
+  <button class="active" data-tab="home">Dashboard</button><button data-tab="movie">Movie Planner</button><button data-tab="characters">Characters</button><button data-tab="scenes">Scene Studio</button><button data-tab="projects">My Projects</button><button data-tab="credits">Credits & Settings</button>
+ </nav>
+</div></header>
+<main class="wrap">
+<section id="home" class="tab active">
+ <div class="hero"><h1>Turn your story into a movie.</h1><p>Plan characters, scenes, dialogue, visual prompts and a production-ready movie package in one place.</p></div>
+ <div class="grid">
+  <div class="card"><h2>New movie project</h2><p class="muted">Start with a story idea and build a scene-by-scene plan.</p><button class="btn" onclick="showTab('movie')">Create a movie</button></div>
+  <div class="card"><h2>First production</h2><p><strong>Baxter & Shayra: The Forest Guardians</strong></p><span class="pill">Family adventure</span><span class="pill">2-minute pilot</span><button class="btn secondary" onclick="loadBaxter()">Load this project</button></div>
+ </div>
+ <div class="notice"><strong>Important:</strong> Story planning works locally. AI image/video generation is available through the connected Runway backend; each generation may incur provider charges. Payments and a verified credit wallet are not included. Never paste an API secret into this page.</div>
+ <div class="card"><h2>Production workflow</h2><div class="row"><span>1. Story & characters</span><span class="good">Ready</span></div><div class="meter"><span style="width:25%"></span></div><p class="muted">Next: create scene prompts, connect an AI provider, generate clips, then assemble and export.</p></div>
+</section>
+<section id="movie" class="tab">
+ <div class="card"><h2>Movie Planner</h2>
+  <label>Movie title</label><input id="title" value="Baxter & Shayra: The Forest Guardians">
+  <label>Story idea</label><textarea id="idea">Baxter, a fearless honey badger, hears a cry for help in an ancient forest. He finds Shayra, a gentle white tiger protecting an injured young deer from hunters. Baxter joins her, and together they protect the deer and begin an unexpected friendship.</textarea>
+  <div class="grid"><div><label>Target duration</label><select id="duration"><option value="15">15 seconds</option><option value="30">30 seconds</option><option value="60">60 seconds</option><option value="120" selected>2 minutes</option><option value="300">5 minutes</option><option value="600">10 minutes</option></select></div><div><label>Visual style</label><select id="style"><option>3D family animation</option><option>Realistic cinematic</option><option>Anime</option><option>Fantasy adventure</option></select></div><div><label>Language</label><select id="language"><option>English</option><option>Hindi</option><option>Hindi + English</option></select></div><div><label>Aspect ratio</label><select id="ratio"><option>16:9 landscape movie</option><option>9:16 vertical short</option><option>1:1 square</option></select></div></div>
+  <div class="actions"><button class="btn" onclick="buildMovie()">Build movie plan</button><button class="btn secondary" onclick="saveProject()">Save project</button></div>
+ </div>
+ <div class="card"><h2>Story package</h2><div id="storyOutput" class="output">Your generated movie plan will appear here.</div><div class="actions"><button class="btn secondary" onclick="copyText('storyOutput')">Copy package</button><button class="btn secondary" onclick="downloadText('storyOutput','riri-movie-plan.txt')">Download TXT</button></div></div>
+</section>
+<section id="characters" class="tab">
+ <div class="grid">
+  <div class="card"><h2>Baxter</h2><span class="pill">Honey badger</span><p>Small, compact and muscular; fearless, clever, mischievous, playful and stubborn. He solves problems with speed, wit and courage.</p><label>Character reference prompt</label><div id="baxterPrompt" class="output">Consistent 3D animated honey badger character, small compact muscular body, expressive eyes, bold mischievous expression, detailed natural fur, family adventure film quality. Clearly a honey badger, never human.</div><button class="btn secondary" onclick="copyText('baxterPrompt')">Copy prompt</button></div>
+  <div class="card"><h2>Shayra</h2><span class="pill">White Bengal tiger</span><p>Slightly larger than Baxter; gentle, calm, kind-hearted and loyal. A powerful protector when danger appears.</p><label>Character reference prompt</label><div id="shayraPrompt" class="output">Consistent majestic female white Bengal tiger, slightly larger than Baxter, elegant athletic body, soft expressive eyes, gentle calm presence, detailed white fur and natural dark stripes, powerful protective stance, family adventure film quality.</div><button class="btn secondary" onclick="copyText('shayraPrompt')">Copy prompt</button></div>
+ </div>
+ <div class="notice">For reliable character consistency, generate and save approved reference images first, then use those same references in every scene with a provider that supports image references.</div>
+</section>
+<section id="scenes" class="tab">
+ <div class="card"><h2>Scene Studio</h2><p class="muted">Build individual scene prompts from the current movie idea.</p><label>Scene count</label><select id="sceneCount"><option>5</option><option selected>10</option><option>16</option><option>24</option></select><button class="btn" onclick="buildScenes()">Generate scene breakdown</button></div>
+ <div id="sceneOutput"></div>
+ <div class="card"><h2>AI Generation (Runway)</h2>
+  <p class="muted">Generate one image or a short video clip from a scene prompt. Each Runway request may use paid credits.</p>
+  <label>Scene number</label><select id="aiScene"><option value="0">Scene 1</option></select>
+  <label>Generation prompt (editable)</label><textarea id="aiPrompt" placeholder="Build scenes first, then choose a scene."></textarea>
+  <div class="grid"><div><label>Video duration</label><select id="aiDuration"><option value="5">5 seconds</option><option value="10">10 seconds</option></select></div><div><label>Access code</label><input id="studioPass" type="password" autocomplete="off" placeholder="Your private Studio access code"></div></div>
+  <div class="actions"><button class="btn secondary" onclick="loadSelectedPrompt()">Load selected scene prompt</button><button class="btn" onclick="generateAI('image')">Generate image</button><button class="btn" onclick="generateAI('video')">Generate video</button></div>
+  <label>Generation status / result</label><div id="aiResult" class="output">No generation started. Build a scene, choose it, then generate.</div>
+  <div id="aiMedia"></div>
+  <p class="muted">Start with one image test. Do not generate repeatedly until you have checked the provider's estimated cost and available credits. This page does not provide a payment wallet or spending cap.</p>
+ </div>
+ <div class="actions"><button class="btn secondary" onclick="copyAllScenes()">Copy all scenes</button><button class="btn secondary" onclick="downloadScenes()">Download scenes</button></div>
+</section>
+<section id="projects" class="tab">
+ <div class="card"><div class="row"><h2>My Projects</h2><button class="btn secondary" onclick="refreshProjects()">Refresh</button></div><div id="projectList" class="muted">Saved projects on this device will appear here.</div></div>
+ <p class="muted">Projects are saved in this browser on this device only. They are not yet synced to an online account.</p>
+</section>
+<section id="credits" class="tab">
+ <div class="card"><h2>Credits & Settings</h2><p><strong>Wallet:</strong> Not connected</p><p class="muted">No real credits are issued or charged by this website yet.</p><div class="notice">When the backend is ready, the wallet will show verified purchased credits, estimated generation cost, usage history and spending limits. A secure payment provider and server-side credit ledger are required.</div>
+  <label>Monthly spending limit (planning only)</label><select id="budget"><option>₹1,000</option><option selected>₹3,000</option><option>₹4,000</option><option>₹5,000</option></select>
+  <label>Backend URL</label><input id="backendUrl" value="https://riri-ai-backend.udaandigitalstudio533.workers.dev" autocomplete="url">
+  <div class="actions"><button class="btn" onclick="testBackend()">Test backend connection</button></div>
+  <label>Connection result</label><div id="backendResult" class="output">Not tested yet. This test checks the public health endpoint only; it does not generate media or spend Runway credits.</div>
+  <p class="muted">Security: Runway API keys stay in Cloudflare Secrets. Never paste them into this website. The Studio access password is not requested or stored in this first connection test.</p>
+ </div>
+</section>
+<div class="footer">RiRi AI Studio 2.2 · Personal movie workspace · Save your work regularly</div>
+</main>
+<script>
+const sceneTitles=["The Forest Guardian","A Cry for Help","Shayra Surrounded","The Brave Little Warrior","First Strike","The Tiger's Warning","Warriors Together","The Hunters Retreat","A New Friendship","The Legend Begins"];
+const sceneVisuals=[
+"Wide aerial view of an ancient forest at dawn, golden sunbeams through tall trees, introduce Baxter exploring the forest.",
+"A distant crash echoes through the trees. Birds burst from the canopy as Baxter stops and listens.",
+"Shayra, a majestic white Bengal tiger, stands protectively beside an injured young deer as hunters approach.",
+"From behind a tree, Baxter watches the danger, then steps into the clearing with fearless confidence.",
+"Baxter darts between the hunters, using speed and clever movements to distract them. No graphic violence.",
+"Shayra rises with a powerful protective roar, making the hunters hesitate and step back.",
+"Baxter and Shayra coordinate their moves, protecting the deer and driving the hunters away without injury.",
+"The hunters retreat into the forest. The clearing becomes quiet again.",
+"Shayra thanks Baxter. The two exchange a warm, playful moment and begin to trust each other.",
+"At sunset, Baxter and Shayra walk side by side toward a glowing forest path, ready for the next adventure."
+];
+let lastScenes=[];
+const API_BASE_DEFAULT='https://riri-ai-backend.udaandigitalstudio533.workers.dev';
+
+async function testBackend(){
+ const base=document.getElementById('backendUrl').value.trim().replace(/\/$/,'');
+ const box=document.getElementById('backendResult');
+ if(!/^https:\/\//i.test(base)){box.textContent='Please enter a valid HTTPS backend URL.';return;}
+ box.textContent='Checking backend…';
+ try{
+  const r=await fetch(base+'/health',{method:'GET',cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  box.textContent=JSON.stringify(data,null,2)+'\n\nHealth check passed. This confirms the Worker is reachable and its configured secrets are detected; generation endpoints still need a separate safe test.';
+  box.classList.add('good');
+ }catch(e){box.textContent='Connection test failed: '+e.message+'\nCheck the backend URL and Cloudflare Worker status.';box.classList.remove('good');}
+}
+function apiBase(){return (document.getElementById('backendUrl')?.value.trim()||API_BASE_DEFAULT).replace(/\/$/,'')}
+function loadSelectedPrompt(){
+ if(!lastScenes.length) buildScenes();
+ const idx=Number(document.getElementById('aiScene').value||0);
+ const scene=lastScenes[idx]||lastScenes[0]||'';
+ const match=scene.match(/IMAGE PROMPT: ([\s\S]*?)\nVIDEO PROMPT:/);
+ document.getElementById('aiPrompt').value=match?match[1].slice(0,1000):scene.slice(0,1000);
+}
+function refreshAiSceneOptions(){const s=document.getElementById('aiScene');if(!s)return;s.innerHTML=lastScenes.map((_,i)=>`<option value="${i}">Scene ${i+1}</option>`).join('');loadSelectedPrompt()}
+async function generateAI(kind){
+ const prompt=document.getElementById('aiPrompt').value.trim();
+ const pass=document.getElementById('studioPass').value.trim();
+ const box=document.getElementById('aiResult'); const media=document.getElementById('aiMedia');
+ if(!prompt){box.textContent='First build scenes and load a scene prompt.';return}
+ if(!pass){box.textContent='Enter your private Studio access code. It is sent only to your Cloudflare Worker and is not saved by this page.';return}
+ if(prompt.length>1000){box.textContent='Prompt is over 1000 characters. Shorten it before sending.';return}
+ const ratio=document.getElementById('ratio').value.includes('9:16')?'720:1280':document.getElementById('ratio').value.includes('1:1')?'960:960':'1280:720';
+ const endpoint=kind==='image'?'/api/image':'/api/video';
+ const body=kind==='image'?{promptText:prompt,ratio:ratio==='960:960'?'1024:1024':ratio==='720:1280'?'1080:1920':'1920:1080'}:{promptText:prompt,ratio,duration:Number(document.getElementById('aiDuration').value)};
+ box.textContent='Sending request to Runway…';media.innerHTML='';
+ try{
+  const res=await fetch(apiBase()+endpoint,{method:'POST',headers:{'Content-Type':'application/json','X-Studio-Pass':pass},body:JSON.stringify(body)});
+  const data=await res.json(); if(!res.ok||data.error) throw new Error(data.details?.error||data.message||data.error||('HTTP '+res.status));
+  if(!data.id) throw new Error('Provider did not return a task ID: '+JSON.stringify(data));
+  box.textContent='Task created: '+data.id+'\nChecking status every 5 seconds…';
+  await pollRunwayTask(data.id,pass,box,media);
+ }catch(e){box.textContent='Generation request failed: '+e.message+'\nCheck your access code, backend deployment and Runway API credits.'}
+}
+async function pollRunwayTask(id,pass,box,media){
+ for(let i=0;i<60;i++){
+  await new Promise(r=>setTimeout(r,5000));
+  const res=await fetch(apiBase()+'/api/tasks/'+encodeURIComponent(id),{headers:{'X-Studio-Pass':pass}});
+  const data=await res.json();
+  if(!res.ok||data.error)throw new Error(data.details?.error||data.error||('Task check HTTP '+res.status));
+  const state=String(data.status||'').toLowerCase();
+  box.textContent='Task: '+id+'\nStatus: '+(data.status||'processing')+'\n';
+  if(state==='succeeded'||state==='completed'){
+   const outputs=Array.isArray(data.output)?data.output:(data.output?[data.output]:[]);
+   box.textContent+='Generation complete.';
+   outputs.forEach((u)=>{if(typeof u==='string'&&/^https:\/\//.test(u)){const a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';a.textContent='Open generated media';a.style.display='block';a.style.margin='12px 0';media.appendChild(a);if(/\.(png|jpe?g|webp)(\?|$)/i.test(u)){const img=document.createElement('img');img.src=u;img.alt='Generated image';img.style.maxWidth='100%';img.style.borderRadius='12px';media.appendChild(img)}else if(/\.(mp4|webm)(\?|$)/i.test(u)){const v=document.createElement('video');v.src=u;v.controls=true;v.playsInline=true;v.style.maxWidth='100%';v.style.marginTop='10px';media.appendChild(v)}}});
+   if(!outputs.length)box.textContent+=' Provider response: '+JSON.stringify(data);return;
+  }
+  if(state==='failed'||state==='cancelled'||state==='canceled'){box.textContent+='Task '+state+'. '+(data.failure||data.error||'See provider task details.');return}
+ }
+ box.textContent+='Still processing after 5 minutes. Check Runway task status later; do not submit the same generation again yet.';
+}
+function showTab(id){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));if(id==='projects')refreshProjects();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+function loadBaxter(){document.getElementById('title').value='Baxter & Shayra: The Forest Guardians';document.getElementById('idea').value='Baxter, a fearless honey badger, hears a cry for help in an ancient forest. He finds Shayra, a gentle white tiger protecting an injured young deer from hunters. Baxter joins her, and together they protect the deer and begin an unexpected friendship.';document.getElementById('duration').value='120';showTab('movie')}
+function buildMovie(){const title=document.getElementById('title').value.trim(),idea=document.getElementById('idea').value.trim(),duration=document.getElementById('duration').value,style=document.getElementById('style').value,language=document.getElementById('language').value,ratio=document.getElementById('ratio').value;if(!idea){alert('Please enter a story idea.');return}const count=duration==='15'?2:duration==='30'?3:duration==='60'?5:duration==='120'?10:duration==='300'?16:24;let beats=sceneTitles.slice(0,count).map((s,i)=>(i+1)+'. '+s+': '+(sceneVisuals[i]||'Advance the story with a new action, emotional beat and clear cinematic transition.')).join('\n');let out='TITLE: '+title+'\nTARGET: '+duration+' seconds | '+style+' | '+language+' | '+ratio+'\n\nSTORY PREMISE\n'+idea+'\n\nCHARACTER CONTINUITY\nBaxter is always a honey badger: small, compact, muscular, fearless and mischievous. Shayra is always a white Bengal tiger, slightly larger than Baxter, gentle and loyal but fiercely protective. Preserve the same approved character reference images, proportions, markings and visual design in every shot.\n\nSCENE OUTLINE\n'+beats+'\n\nPRODUCTION NOTES\nUse clear establishing, medium and close-up shots. Keep screen direction consistent. Give every scene a distinct action and emotional purpose. Use family-friendly, non-graphic action. Generate short clips per scene and assemble them in sequence; do not expect one prompt to create a complete long movie.\n\nVIDEO GENERATION STATUS\nThis is a production plan only. Connect a supported video-generation API through a secure backend to render actual clips.';document.getElementById('storyOutput').textContent=out;buildScenes()}
+function buildScenes(){const n=Number(document.getElementById('sceneCount').value),idea=document.getElementById('idea').value||'Baxter and Shayra begin an adventure.',style=document.getElementById('style').value;lastScenes=[];for(let i=0;i<n;i++){const title=sceneTitles[i%10],visual=sceneVisuals[i%10];const item='SCENE '+(i+1)+' — '+title+'\nVISUAL: '+visual+'\nACTION: Show one clear physical action and one readable emotional reaction. Keep Baxter a honey badger and Shayra a white Bengal tiger, with consistent scale and approved reference designs.\nCAMERA: Cinematic establishing shot, then medium action framing and a brief expressive close-up.\nDIALOGUE: Baxter: "No one faces danger alone." Shayra: "Then we face it together."\nSOUND: Forest ambience, character movement, restrained cinematic score.\nIMAGE PROMPT: '+style+' film still, '+visual+' Maintain exact character continuity, detailed fur, natural lighting, polished family adventure composition.\nVIDEO PROMPT: Animate the same composition for a short cinematic shot. Natural body movement, expressive faces, stable character design, smooth camera motion, no morphing, no extra limbs, no text or watermark.';lastScenes.push(item)}document.getElementById('sceneOutput').innerHTML=lastScenes.map((s,i)=>'<div class="scene"><strong>Scene '+(i+1)+'</strong><pre>'+escapeHtml(s)+'</pre><button class="btn secondary" onclick="copyScene('+i+')">Copy scene</button></div>').join('');refreshAiSceneOptions()}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function copyScene(i){navigator.clipboard.writeText(lastScenes[i]).then(()=>alert('Scene copied.')).catch(()=>alert('Copy not available in this browser.'))}
+function copyAllScenes(){navigator.clipboard.writeText(lastScenes.join('\n\n')).then(()=>alert('All scenes copied.')).catch(()=>alert('Copy not available.'))}
+function copyText(id){navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>alert('Copied.')).catch(()=>alert('Copy not available.'))}
+function downloadText(id,name){downloadBlob(document.getElementById(id).textContent,name)}
+function downloadScenes(){downloadBlob(lastScenes.join('\n\n'), 'riri-scenes.txt')}
+function downloadBlob(text,name){const a=document.createElement('a'),u=URL.createObjectURL(new Blob([text],{type:'text/plain'}));a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
+function saveProject(){const p={title:document.getElementById('title').value,idea:document.getElementById('idea').value,duration:document.getElementById('duration').value,style:document.getElementById('style').value,ratio:document.getElementById('ratio').value,updated:new Date().toLocaleString()};let all=JSON.parse(localStorage.getItem('ririStudioProjects')||'[]');all.unshift(p);localStorage.setItem('ririStudioProjects',JSON.stringify(all.slice(0,30)));alert('Project saved on this device.');}
+function refreshProjects(){let all=JSON.parse(localStorage.getItem('ririStudioProjects')||'[]');document.getElementById('projectList').innerHTML=all.length?all.map((p,i)=>'<div class="scene"><strong>'+escapeHtml(p.title)+'</strong><p class="muted">'+escapeHtml(p.updated)+' · '+p.duration+' sec · '+escapeHtml(p.style)+'</p><button class="btn secondary" onclick="openProject('+i+')">Open</button></div>').join(''):'No saved projects yet.'}
+function openProject(i){let p=JSON.parse(localStorage.getItem('ririStudioProjects')||'[]')[i];if(!p)return;document.getElementById('title').value=p.title;document.getElementById('idea').value=p.idea;document.getElementById('duration').value=p.duration;document.getElementById('style').value=p.style;document.getElementById('ratio').value=p.ratio;showTab('movie')}
+</script>
+</body></html>
