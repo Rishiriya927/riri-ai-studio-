@@ -42,6 +42,7 @@ button {
   cursor:pointer;
 }
 button:hover,.active { border-color:var(--gold);color:var(--gold); }
+button:disabled { opacity:.5;cursor:not-allowed; }
 main { max-width:1100px;margin:auto;padding:16px; }
 .page { display:none; }
 .page.active { display:block; }
@@ -84,10 +85,25 @@ label { color:var(--muted);font-size:13px; }
   border-radius:8px;
   color:var(--gold);
   white-space:pre-wrap;
+  overflow-wrap:anywhere;
   margin-top:12px;
+}
+.progress-track {
+  height:8px;
+  background:#26334b;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:12px;
+}
+.progress-bar {
+  width:0%;
+  height:100%;
+  background:var(--gold);
+  transition:width .3s ease;
 }
 footer { text-align:center;color:var(--muted);padding:25px; }
 .item-image { max-width:180px;width:100%;border-radius:10px; }
+.small-note { font-size:12px;color:var(--muted);line-height:1.5; }
 </style>
 </head>
 
@@ -173,7 +189,7 @@ footer { text-align:center;color:var(--muted);padding:25px; }
 <section id="generation" class="page">
   <div class="card">
     <h2>RiRi AI Generation Studio</h2>
-    <p class="muted">Generate images and videos through your Cloudflare backend. Provider charges may apply.</p>
+    <p class="muted">Images use Cloudflare Workers AI. Videos use Magic Hour API.</p>
 
     <label>Cloudflare Backend URL</label>
     <input id="backend" value="https://riri-ai-backend.udaandigitalstudio533.workers.dev">
@@ -186,7 +202,7 @@ footer { text-align:center;color:var(--muted);padding:25px; }
 
     <div class="grid">
       <div>
-        <label>Aspect Ratio</label>
+        <label>Aspect Ratio (prompt guidance)</label>
         <select id="ratio">
           <option value="16:9">16:9 Landscape</option>
           <option value="9:16">9:16 Vertical</option>
@@ -205,13 +221,23 @@ footer { text-align:center;color:var(--muted);padding:25px; }
       </div>
     </div>
 
-    <label>Reference Image for Video (optional)</label>
+    <label>Reference Image for Video (required)</label>
     <input id="videoImage" type="file" accept="image/png,image/jpeg,image/webp">
+
+    <p class="small-note">
+      Select a reference image before generating a video.
+      Video generation uses Magic Hour credits. Check your balance before starting.
+    </p>
 
     <button class="gold" id="imageButton" onclick="generate('image')">Generate Image</button>
     <button id="videoButton" onclick="generate('video')">Generate Video</button>
 
     <div id="genStatus" class="status">Ready. No generation will start until you press a button.</div>
+
+    <div class="progress-track">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+
     <div id="genOutput" class="output"></div>
   </div>
 </section>
@@ -417,11 +443,115 @@ function readImage(file) {
   });
 }
 
+// API helper
+async function apiRequest(url, pass, options = {}) {
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      "X-Studio-Pass": pass,
+      ...(options.headers || {})
+    }
+  });
+
+  let data;
+
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error("Backend returned an invalid response.");
+  }
+
+  if (!response.ok || !data.ok) {
+    throw new Error(data.error || `Request failed (${response.status}).`);
+  }
+
+  return data;
+}
+
+function setProgress(value) {
+  $("progressBar").style.width = `${Math.max(0, Math.min(100, value))}%`;
+}
+
+// Poll Magic Hour project status
+async function waitForVideo(backend, pass, projectId, duration) {
+  const maxWaitMs = 12 * 60 * 1000;
+  const intervalMs = 6000;
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt < maxWaitMs) {
+    await new Promise(resolve => setTimeout(resolve, intervalMs));
+
+    const data = await apiRequest(
+      `${backend}/api/video/status?id=${encodeURIComponent(projectId)}`,
+      pass,
+      { method: "GET" }
+    );
+
+    const elapsed = Date.now() - startedAt;
+    const progress = Math.min(95, Math.floor(elapsed / maxWaitMs * 100));
+    setProgress(progress);
+
+    $("genStatus").textContent =
+      `Video project: ${projectId}\n` +
+      `Status: ${data.status}\n` +
+      `Checking again in 6 seconds...`;
+
+    if (data.status === "complete") {
+      if (!data.videoUrl) {
+        throw new Error("Video completed, but no download URL was returned.");
+      }
+
+      showVideo(data.videoUrl, duration);
+      setProgress(100);
+
+      $("genStatus").textContent =
+        `Video generated successfully (${duration} seconds).\nProject ID: ${projectId}`;
+
+      return;
+    }
+
+    if (["error", "failed", "canceled", "cancelled"].includes(
+      String(data.status).toLowerCase()
+    )) {
+      throw new Error(
+        data.error || `Video generation ended with status: ${data.status}`
+      );
+    }
+  }
+
+  throw new Error(
+    "Video is taking longer than expected. Your project may still be processing. Project ID: " +
+    projectId
+  );
+}
+
+function showVideo(videoUrl, duration) {
+  const video = document.createElement("video");
+  video.src = videoUrl;
+  video.controls = true;
+  video.playsInline = true;
+  video.preload = "metadata";
+
+  const output = $("genOutput");
+  output.replaceChildren(video);
+
+  const link = document.createElement("a");
+  link.href = videoUrl;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.textContent = "Open / Download Generated Video";
+  link.style.display = "inline-block";
+  link.style.marginTop = "12px";
+  link.style.color = "#efc46b";
+
+  output.append(link);
+}
+
 // AI Generation
 async function generate(type) {
   const backend = $("backend").value.trim().replace(/\/+$/, "");
   const pass = $("studioPass").value;
-  const promptText = $("prompt").value.trim();
+  let promptText = $("prompt").value.trim();
 
   if (!backend || !pass || !promptText) {
     alert("Enter backend URL, Studio Pass and prompt.");
@@ -434,13 +564,10 @@ async function generate(type) {
   const videoButton = $("videoButton");
 
   output.replaceChildren();
+  setProgress(0);
 
   imageButton.disabled = true;
   videoButton.disabled = true;
-
-  status.textContent = type === "image"
-    ? "Generating image..."
-    : "Preparing video generation...";
 
   try {
     const body = {
@@ -449,60 +576,86 @@ async function generate(type) {
       duration: Number($("duration").value)
     };
 
-    if (type === "video") {
-      const file = $("videoImage").files[0];
+    if (type === "image") {
+      status.textContent = "Generating image...";
 
-      if (file) {
-        if (file.size > 6 * 1024 * 1024) {
-          throw new Error("Please select an image smaller than 6 MB.");
+      const data = await apiRequest(
+        backend + "/api/image",
+        pass,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
         }
+      );
 
-        body.image = await readImage(file);
+      if (!data.imageDataUrl) {
+        throw new Error("Backend did not return an image.");
       }
-    }
 
-    const response = await fetch(
-      backend + (type === "image" ? "/api/image" : "/api/video"),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Studio-Pass": pass
-        },
-        body: JSON.stringify(body)
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok || !data.ok) {
-      throw new Error(data.error || "Generation request failed.");
-    }
-
-    if (type === "image" && data.imageDataUrl) {
       const img = document.createElement("img");
       img.src = data.imageDataUrl;
       output.append(img);
 
       status.textContent = "Image generated successfully.";
+      setProgress(100);
       return;
     }
 
-    if (type === "video" && data.videoUrl) {
-      const video = document.createElement("video");
-      video.src = data.videoUrl;
-      video.controls = true;
-      video.playsInline = true;
-      video.preload = "metadata";
+    const file = $("videoImage").files[0];
 
-      output.append(video);
-
-      status.textContent =
-        "Video generated successfully (" + data.duration + " seconds).";
-      return;
+    if (!file) {
+      throw new Error("Please select a reference image before generating video.");
     }
 
-    throw new Error("Backend did not return the expected media.");
+    if (file.size > 6 * 1024 * 1024) {
+      throw new Error("Please select an image smaller than 6 MB.");
+    }
+
+    const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error("Use a PNG, JPEG or WebP reference image.");
+    }
+
+    const duration = Number($("duration").value);
+    const ratio = $("ratio").value;
+
+    promptText += ` Compose the video for a ${ratio} aspect ratio.`;
+
+    status.textContent = "Reading reference image...";
+    body.image = await readImage(file);
+    body.promptText = promptText;
+
+    status.textContent = "Uploading image and starting Magic Hour video project...";
+    setProgress(5);
+
+    const created = await apiRequest(
+      backend + "/api/video",
+      pass,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (!created.projectId) {
+      throw new Error("Backend did not return a video project ID.");
+    }
+
+    status.textContent =
+      `Video project created.\nProject ID: ${created.projectId}\n` +
+      "Waiting for Magic Hour to finish rendering...";
+
+    setProgress(10);
+
+    await waitForVideo(
+      backend,
+      pass,
+      created.projectId,
+      duration
+    );
 
   } catch (error) {
     status.textContent = "Error: " + error.message;
@@ -534,7 +687,7 @@ function exportBackup() {
   link.download = "riri-studio-backup.json";
   link.click();
 
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 // Backup import
@@ -571,6 +724,12 @@ function importBackup(event) {
 // Initial display
 renderCharacters();
 renderScenes();
+
+const savedProject = read("riri_project", null);
+if (savedProject && savedProject.name) {
+  $("projectName").value = savedProject.name;
+}
+
 </script>
 
 </body>
