@@ -120,6 +120,7 @@ footer { text-align:center;color:var(--muted);padding:25px; }
   <button data-page="characters">Characters</button>
   <button data-page="scenes">Scene Planner</button>
   <button data-page="generation">AI Generation</button>
+  <button data-page="audio">Audio Studio</button>
   <button data-page="movie">Movie Editor</button>
   <button data-page="settings">Settings</button>
 </nav>
@@ -241,7 +242,49 @@ footer { text-align:center;color:var(--muted);padding:25px; }
     <div id="genOutput" class="output"></div>
   </div>
 </section>
+<section id="audio" class="page">
+  <div class="card">
+    <h2>RiRi Audio Studio</h2>
+    <p class="muted">Create Baxter and Shayra dialogue in Hindi or English.</p>
 
+    <label>Character</label>
+    <select id="audioCharacter" onchange="setCharacterVoice()">
+      <option value="Baxter">Baxter</option>
+      <option value="Shayra">Shayra</option>
+      <option value="Custom">Custom</option>
+    </select>
+
+    <label>Voice</label>
+    <select id="audioVoice">
+      <option value="Dennis">Dennis - Male</option>
+      <option value="Liam">Liam - Male</option>
+      <option value="Arjun">Arjun - Male</option>
+      <option value="Priya">Priya - Female</option>
+      <option value="Anjali">Anjali - Female</option>
+      <option value="Saanvi">Saanvi - Female</option>
+      <option value="Olivia">Olivia - Female</option>
+      <option value="Sarah">Sarah - Female</option>
+    </select>
+
+    <label>Dialogue (Hindi / English)</label>
+    <textarea id="audioText" maxlength="2000"
+      placeholder="Baxter: We must find Shayra!"></textarea>
+
+    <label>Speaking Speed</label>
+    <input id="audioRate" type="range"
+      min="0.5" max="1.5" step="0.1" value="1"
+      oninput="document.getElementById('audioRateValue').textContent=this.value">
+
+    <p class="muted">Speed: <span id="audioRateValue">1</span>x</p>
+
+    <button class="gold" id="audioButton" onclick="generateAudio()">
+      Generate MP3
+    </button>
+
+    <div id="audioStatus" class="status">Ready.</div>
+    <div id="audioOutput" class="output"></div>
+  </div>
+</section>
 <section id="movie" class="page">
   <div class="card">
     <h2>Movie Editor & Export Planner</h2>
@@ -664,7 +707,91 @@ async function generate(type) {
     videoButton.disabled = false;
   }
 }
+// RiRi Audio Studio
 
+function setCharacterVoice() {
+  const character = $("audioCharacter").value;
+
+  if (character === "Baxter") {
+    $("audioVoice").value = "Dennis";
+  }
+
+  if (character === "Shayra") {
+    $("audioVoice").value = "Priya";
+  }
+}
+
+async function generateAudio() {
+  const backend = $("backend").value.trim().replace(/\/+$/, "");
+  const pass = $("studioPass").value;
+  const text = $("audioText").value.trim();
+  const voiceId = $("audioVoice").value;
+  const speakingRate = Number($("audioRate").value);
+
+  const button = $("audioButton");
+  const status = $("audioStatus");
+  const output = $("audioOutput");
+
+  if (!backend || !pass) {
+    alert("First enter Backend URL and Studio Pass in AI Generation.");
+    return;
+  }
+
+  if (!text) {
+    alert("Please enter dialogue.");
+    return;
+  }
+
+  button.disabled = true;
+  output.replaceChildren();
+  status.textContent = "Generating MP3...";
+
+  try {
+    const data = await apiRequest(
+      backend + "/api/audio",
+      pass,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          text,
+          voiceId,
+          speakingRate
+        })
+      }
+    );
+
+    if (!data.audioUrl || typeof data.audioUrl !== "string") {
+      throw new Error("Audio URL was not returned.");
+    }
+
+    const player = document.createElement("audio");
+    player.controls = true;
+    player.src = data.audioUrl;
+    player.style.width = "100%";
+
+    const download = document.createElement("a");
+    download.href = data.audioUrl;
+    download.target = "_blank";
+    download.rel = "noopener";
+    download.download = "riri-dialogue.mp3";
+    download.textContent = "Download MP3";
+    download.style.display = "block";
+    download.style.marginTop = "15px";
+    download.style.color = "#efc46b";
+
+    output.append(player, download);
+
+    status.textContent = "MP3 generated successfully.";
+
+  } catch (error) {
+    status.textContent = "Audio Error: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
 // Backup export
 function exportBackup() {
   const data = {
