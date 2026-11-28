@@ -121,6 +121,7 @@ footer { text-align:center;color:var(--muted);padding:25px; }
   <button data-page="scenes">Scene Planner</button>
   <button data-page="generation">AI Generation</button>
   <button data-page="audio">Audio Studio</button>
+  <button data-page="audio">Audio Studio</button>
   <button data-page="movie">Movie Editor</button>
   <button data-page="settings">Settings</button>
 </nav>
@@ -285,6 +286,187 @@ footer { text-align:center;color:var(--muted);padding:25px; }
     <div id="audioOutput" class="output"></div>
   </div>
 </section>
+  <section id="audio" class="page">
+  <div class="card">
+    <h2>RiRi Audio Studio</h2>
+    <p class="muted">Baxter and Shayra Voice Generator</p>
+
+    <label>Character</label>
+    <select id="audioCharacter" onchange="setCharacterVoice()">
+      <option value="Baxter">Baxter</option>
+      <option value="Shayra">Shayra</option>
+      <option value="Custom">Custom</option>
+    </select>
+
+    <label>Voice</label>
+    <select id="audioVoice">
+      <option value="Dennis">Dennis</option>
+      <option value="Liam">Liam</option>
+      <option value="Arjun">Arjun</option>
+      <option value="Priya">Priya</option>
+      <option value="Anjali">Anjali</option>
+      <option value="Saanvi">Saanvi</option>
+    </select>
+
+    <label>Dialogue (Hindi / English)</label>
+    <textarea id="audioText" maxlength="2000"
+      placeholder="Baxter: We must find Shayra!"></textarea>
+
+    <label>Speaking Speed</label>
+    <input id="audioRate" type="range" min="0.5" max="1.5"
+      step="0.1" value="1">
+
+    <button class="gold" id="audioButton" onclick="generateAudio()">
+      Generate MP3
+    </button>
+
+    <div id="audioStatus" class="status">Ready.</div>
+    <div id="audioOutput" class="output"></div>
+  </div>
+</section>
+  
+<section id="audio" class="page">
+  <div class="card">
+    <h2>RiRi Audio Studio</h2>
+    <p class="muted">AI Character Voice Generator</p>
+
+    <div class="audio-grid">
+      <div>
+        <label for="audioCharacter">Character</label>
+        <select id="audioCharacter" onchange="setCharacterVoice()">
+          <option value="Baxter">Baxter</option>
+          <option value="Shayra">Shayra</option>
+          <option value="Custom">Custom Voice</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="audioVoice">Voice</label>
+        <select id="audioVoice">
+          <option value="Dennis">Dennis</option>
+          <option value="Liam">Liam</option>
+          <option value="Arjun">Arjun</option>
+          <option value="Priya">Priya</option>
+          <option value="Anjali">Anjali</option>
+          <option value="Saanvi">Saanvi</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="audioLanguage">Dialogue Language</label>
+    <select id="audioLanguage">
+      <option value="auto">Auto Detect</option>
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+      <option value="mixed">Hindi + English</option>
+    </select>
+
+    <label for="audioText">Dialogue / Script</label>
+    <textarea
+      id="audioText"
+      maxlength="2000"
+      rows="6"
+      placeholder="Baxter: We must find Shayra!&#10;Shayra: I am right here, Baxter!"
+    ></textarea>
+
+    <div class="audio-grid">
+      <div>
+        <label for="audioRate">Speaking Speed</label>
+        <input
+          id="audioRate"
+          type="range"
+          min="0.5"
+          max="1.5"
+          step="0.1"
+          value="1"
+          oninput="document.getElementById('audioRateValue').textContent=this.value+'x'"
+        >
+        <span id="audioRateValue">1x</span>
+      </div>
+
+      <div>
+        <label for="audioFormat">Output Format</label>
+        <select id="audioFormat">
+          <option value="mp3">MP3</option>
+        </select>
+      </div>
+    </div>
+
+    <button
+      class="gold"
+      id="audioButton"
+      onclick="generateAudio()"
+    >
+      Generate MP3
+    </button>
+
+    <div id="audioStatus" class="status">
+      Ready to generate audio.
+    </div>
+
+    <div id="audioOutput" class="output"></div>
+  </div>
+</section>
+
+<style>
+#audio .audio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+#audio label {
+  display: block;
+  margin: 12px 0 7px;
+  font-weight: 600;
+}
+
+#audio select,
+#audio textarea,
+#audio input[type="range"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#audio textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+#audio #audioButton {
+  margin-top: 18px;
+  width: 100%;
+}
+
+#audio .status {
+  margin-top: 16px;
+}
+
+#audio .output {
+  margin-top: 18px;
+}
+
+#audio audio {
+  width: 100%;
+  margin-top: 12px;
+}
+
+#audio .download-audio {
+  display: inline-block;
+  margin-top: 12px;
+  color: #efc46b;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  #audio .audio-grid {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+</style>
+
 <section id="movie" class="page">
   <div class="card">
     <h2>Movie Editor & Export Planner</h2>
@@ -792,6 +974,155 @@ async function generateAudio() {
     button.disabled = false;
   }
 }
+  function setCharacterVoice() {
+  const character = $("audioCharacter").value;
+  if (character === "Baxter") $("audioVoice").value = "Dennis";
+  if (character === "Shayra") $("audioVoice").value = "Priya";
+}
+
+async function generateAudio() {
+  const backend = $("backend").value.trim().replace(/\/+$/, "");
+  const pass = $("studioPass").value;
+  const text = $("audioText").value.trim();
+  const voiceId = $("audioVoice").value;
+  const speakingRate = Number($("audioRate").value);
+
+  const button = $("audioButton");
+  const status = $("audioStatus");
+  const output = $("audioOutput");
+
+  if (!backend || !pass) {
+    alert("Enter Backend URL and Studio Pass in AI Generation.");
+    return;
+  }
+
+  if (!text) {
+    alert("Enter dialogue first.");
+    return;
+  }
+
+  button.disabled = true;
+  output.replaceChildren();
+  status.textContent = "Generating MP3...";
+
+  try {
+    const data = await apiRequest(
+      backend + "/api/audio",
+      pass,
+      {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({text, voiceId, speakingRate})
+      }
+    );
+
+    if (!data.audioUrl || typeof data.audioUrl !== "string") {
+      throw new Error("Audio URL was not returned.");
+    }
+
+    const player = document.createElement("audio");
+    player.controls = true;
+    player.src = data.audioUrl;
+    player.style.width = "100%";
+
+    const link = document.createElement("a");
+    link.href = data.audioUrl;
+    link.download = "riri-dialogue.mp3";
+    link.target = "_blank";
+    link.textContent = "Download MP3";
+    link.style.display = "block";
+    link.style.marginTop = "15px";
+    link.style.color = "#efc46b";
+
+    output.append(player, link);
+    status.textContent = "MP3 generated successfully.";
+
+  } catch (error) {
+    status.textContent = "Audio Error: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
+  
+function setCharacterVoice() {
+  const character = $("audioCharacter").value;
+
+  if (character === "Baxter") {
+    $("audioVoice").value = "Dennis";
+  }
+
+  if (character === "Shayra") {
+    $("audioVoice").value = "Priya";
+  }
+}
+
+async function generateAudio() {
+  const backend = $("backend").value.trim().replace(/\/+$/, "");
+  const pass = $("studioPass").value;
+  const text = $("audioText").value.trim();
+  const voiceId = $("audioVoice").value;
+  const speakingRate = Number($("audioRate").value);
+
+  const button = $("audioButton");
+  const status = $("audioStatus");
+  const output = $("audioOutput");
+
+  if (!backend || !pass) {
+    alert("Enter Backend URL and Studio Pass in AI Generation.");
+    return;
+  }
+
+  if (!text) {
+    alert("Enter dialogue first.");
+    return;
+  }
+
+  button.disabled = true;
+  output.replaceChildren();
+  status.textContent = "Generating MP3...";
+
+  try {
+    const data = await apiRequest(
+      backend + "/api/audio",
+      pass,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          text,
+          voiceId,
+          speakingRate
+        })
+      }
+    );
+
+    if (!data.audioUrl || typeof data.audioUrl !== "string") {
+      throw new Error("Audio URL was not returned by backend.");
+    }
+
+    const player = document.createElement("audio");
+    player.controls = true;
+    player.src = data.audioUrl;
+
+    const link = document.createElement("a");
+    link.href = data.audioUrl;
+    link.download = "riri-dialogue.mp3";
+    link.target = "_blank";
+    link.textContent = "Download MP3";
+    link.className = "download-audio";
+
+    output.append(player, link);
+    status.textContent = "MP3 generated successfully.";
+
+  } catch (error) {
+    status.textContent = "Audio Error: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
+
 // Backup export
 function exportBackup() {
   const data = {
